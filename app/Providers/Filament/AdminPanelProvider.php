@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('SIFEN Panel')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -51,7 +52,6 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                \App\Http\Middleware\AutoLogin::class, // Auto-login en desarrollo
             ])
             ->authMiddleware([
                 Authenticate::class,
