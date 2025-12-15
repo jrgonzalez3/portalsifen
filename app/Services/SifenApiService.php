@@ -63,6 +63,7 @@ abstract class SifenApiService
                 'success' => $response->successful(),
                 'status' => $response->status(),
                 'data' => $responseData,
+                'error' => $response->successful() ? null : ('HTTP Error ' . $response->status() . ': ' . substr($response->body(), 0, 200)),
                 'response_time' => $responseTime,
             ];
             

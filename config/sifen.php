@@ -14,32 +14,26 @@ return [
 
     'environment' => env('SIFEN_ENVIRONMENT', 'dev'),
 
-    'credentials' => [
-        'idCsc' => env('SIFEN_ID_CSC', '0001'),
-        'csc' => env('SIFEN_CSC'),
-        'claveCertificado' => env('SIFEN_CLAVE_CERTIFICADO'),
-        'nombreCertificado' => env('SIFEN_NOMBRE_CERTIFICADO'),
-        'id' => env('SIFEN_ID', '001'),
-    ],
-
     'environments' => [
-        'dev' => [
-            'kude_url' => env('SIFEN_DEV_KUDE_URL', 'http://10.99.99.56:37100/consultakude/'),
-            'ruc_url' => env('SIFEN_DEV_RUC_URL', 'http://10.99.99.56:37100/consultaruc/'),
-            'lote_url' => env('SIFEN_DEV_LOTE_URL', 'http://10.99.99.56:37100/consultalote/'),
-            'cdc_url' => env('SIFEN_DEV_CDC_URL', 'http://10.99.99.56:37100/consultacdc/'),
+        'test' => [ // Testing environment
+            'url' => env('URL_TESTING', 'http://10.99.99.63:37100'),
+            'credentials' => [
+                'idCsc' => trim(env('IDCSC_TEST', '0001'), " \",\t\n\r\0\x0B"),
+                'csc' => trim(env('CSC_TEST', ''), " \",\t\n\r\0\x0B"),
+                'nombreCertificado' => trim(env('NOMBRE_CERTIFICADO_TEST', ''), " \",\t\n\r\0\x0B"),
+                'claveCertificado' => trim(env('CLAVE_CERTIFICADO_TEST', ''), " \",\t\n\r\0\x0B"),
+                'id' => '001',
+            ],
         ],
-        'pruebas' => [
-            'kude_url' => env('SIFEN_PRUEBAS_KUDE_URL', 'http://10.99.99.63:37100/consultakude/'),
-            'ruc_url' => env('SIFEN_PRUEBAS_RUC_URL', 'http://10.99.99.63:37100/consultaruc/'),
-            'lote_url' => env('SIFEN_PRUEBAS_LOTE_URL', 'http://10.99.99.63:37100/consultalote/'),
-            'cdc_url' => env('SIFEN_PRUEBAS_CDC_URL', 'http://10.99.99.63:37100/consultacdc/'),
-        ],
-        'prod' => [
-            'kude_url' => env('SIFEN_PROD_KUDE_URL', 'http://192.168.77.74:37100/consultakude/'),
-            'ruc_url' => env('SIFEN_PROD_RUC_URL', 'http://192.168.77.74:37100/consultaruc/'),
-            'lote_url' => env('SIFEN_PROD_LOTE_URL', 'http://192.168.77.74:37100/consultalote/'),
-            'cdc_url' => env('SIFEN_PROD_CDC_URL', 'http://192.168.77.74:37100/consultacdc/'),
+        'prod' => [ // Production environment
+            'url' => env('URL_PROD', 'http://192.168.77.74:37100'),
+            'credentials' => [
+                'idCsc' => trim(env('IDCSC_PROD', '0001'), " \",\t\n\r\0\x0B"),
+                'csc' => trim(env('CSC_PROD', ''), " \",\t\n\r\0\x0B"),
+                'nombreCertificado' => trim(env('NOMBRE_CERTIFICADO_PROD', ''), " \",\t\n\r\0\x0B"),
+                'claveCertificado' => trim(env('CLAVE_CERTIFICADO_PROD', ''), " \",\t\n\r\0\x0B"),
+                'id' => '001',
+            ],
         ],
     ],
 

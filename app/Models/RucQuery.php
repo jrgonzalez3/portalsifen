@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class RucQuery extends Model
 {
-    //
+    protected $guarded = [];
+
+    protected $casts = [
+        'taxpayer_data' => 'array',
+    ];
 }
