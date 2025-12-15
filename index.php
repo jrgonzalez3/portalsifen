@@ -9,7 +9,7 @@
 
 // Redirect to public folder
 if (file_exists(__DIR__ . '/public/index.php')) {
-    header('Location: /public/');
+    header('Location: public/');
     exit;
 }
 

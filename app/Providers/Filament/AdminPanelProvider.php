@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->globalSearch(false)
             ->brandName('Panel Sifen')
             ->colors([
                 'primary' => Color::Blue,
@@ -37,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                Dashboard::class,
+                \App\Filament\Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -56,6 +57,23 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('Documentacion Api Fac. Elect.')
+                    ->url('http://apidoc.local:8080/#introduccion', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-document-text')
+                    ->group('Utilidades')
+                    ->sort(100),
+                \Filament\Navigation\NavigationItem::make('Consultar datos de Personas')
+                    ->url('http://panelsifen.local:8080/personas.php', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-users')
+                    ->group('Utilidades')
+                    ->sort(101),
+                \Filament\Navigation\NavigationItem::make('Consultar Validez del XML Sifen')
+                    ->url('https://ekuatia.set.gov.py/prevalidador/validacion', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-check-circle')
+                    ->group('Utilidades')
+                    ->sort(102),
             ]);
     }
 }

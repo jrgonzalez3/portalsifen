@@ -10,11 +10,7 @@ class StatsOverview extends StatsOverviewWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Consultas API', \App\Models\ApiLog::count())
-                ->description('Llamadas a APIs SIFEN')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
+
             Stat::make('Consultas RUC', \App\Models\RucQuery::count())
                 ->description('Contribuyentes consultados')
                 ->descriptionIcon('heroicon-m-magnifying-glass')

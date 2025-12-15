@@ -32,6 +32,8 @@ class ApiLogResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = 'Sistema';
     
     protected static ?int $navigationSort = 10;
+    
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {
