@@ -32,9 +32,7 @@ class LoteBatchesTable
                 TextColumn::make('status')
                     ->label('Estado')
                     ->badge(),
-                TextColumn::make('documents_count')
-                    ->label('Documentos')
-                    ->numeric(),
+
                 TextColumn::make('created_at')
                     ->label('Fecha')
                     ->dateTime()
@@ -50,14 +48,8 @@ class LoteBatchesTable
                     ])
                     ->placeholder('Todos los entornos'),
             ])
-            ->recordActions([
+            ->actions([
                 ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ])
             ->defaultSort('created_at', 'desc');
     }

@@ -61,9 +61,7 @@ class LoteBatchResource extends Resource
     {
         return [
             'index' => ListLoteBatches::route('/'),
-            'create' => CreateLoteBatch::route('/create'),
             'view' => ViewLoteBatch::route('/{record}'),
-            'edit' => EditLoteBatch::route('/{record}/edit'),
         ];
     }
 }

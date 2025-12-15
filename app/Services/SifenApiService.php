@@ -35,7 +35,7 @@ abstract class SifenApiService
      */
     protected function getCredentials(): array
     {
-        return config('sifen.credentials');
+        return config("sifen.environments.{$this->environment}.credentials") ?? [];
     }
     
     /**

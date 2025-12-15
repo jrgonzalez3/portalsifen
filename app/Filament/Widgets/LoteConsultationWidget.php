@@ -11,15 +11,15 @@ use Filament\Schemas\Components\Actions;
 use Filament\Actions\Action;
 use Filament\Support\Enums\VerticalAlignment;
 use Filament\Notifications\Notification;
-use App\Services\RucApiService;
-use App\Models\RucQuery;
+use App\Services\LoteApiService;
+use App\Models\LoteBatch;
 use Filament\Schemas\Schema;
 
-class RucConsultationWidget extends Widget implements HasForms
+class LoteConsultationWidget extends Widget implements HasForms
 {
     use InteractsWithForms;
 
-    protected string $view = 'filament.widgets.ruc-consultation-widget';
+    protected string $view = 'filament.widgets.lote-consultation-widget';
     protected int | string | array $columnSpan = 'full';
 
     public ?array $data = [];
@@ -35,12 +35,12 @@ class RucConsultationWidget extends Widget implements HasForms
     {
         return $schema
             ->schema([
-                TextInput::make('ruc_number')
-                    ->label('Consultar RUC - Sifen')
-                    ->placeholder('Ingrese RUC sin DV')
-                    ->prefixIcon('heroicon-m-identification')
+                TextInput::make('batch_number')
+                    ->label('Consultar Lote')
+                    ->placeholder('Ingrese el Número de Lote')
+                    ->prefixIcon('heroicon-m-archive-box')
                     ->required()
-                    ->numeric()
+                    ->regex('/^[0-9]+$/')
                     ->columnSpan([
                         'md' => 5,
                     ]),
@@ -69,7 +69,7 @@ class RucConsultationWidget extends Widget implements HasForms
                 ->columnSpan([
                     'md' => 3,
                 ])
-                ->verticalAlignment(VerticalAlignment::End), // Alineación abajo
+                ->verticalAlignment(VerticalAlignment::End),
             ])
             ->columns(12)
             ->statePath('data');
@@ -78,13 +78,15 @@ class RucConsultationWidget extends Widget implements HasForms
     public function consult()
     {
         $data = $this->form->getState();
-        $ruc_number = $data['ruc_number'];
+        $batch_number = $data['batch_number'];
         $environment = $data['environment'];
 
-        $service = app(RucApiService::class);
+        $service = app(LoteApiService::class);
 
         try {
-            $responseWrapper = $service->consultRuc($ruc_number, $environment);
+            $service->setEnvironment($environment);
+            
+            $responseWrapper = $service->consultLote($batch_number);
 
             if (!isset($responseWrapper['success']) || !$responseWrapper['success']) {
                 $errorMsg = $responseWrapper['error'] ?? 'Error desconocido';
@@ -94,7 +96,9 @@ class RucConsultationWidget extends Widget implements HasForms
 
             $responseData = $responseWrapper['data'] ?? [];
             $resultadoSet = $responseData['resultadoSET'] ?? [];
-            $resEnvi = $resultadoSet['ns2:rResEnviConsRUC'] ?? [];
+            
+            // Try predictable keys for Lote: rResEnviConsLoteDe
+            $resEnvi = $resultadoSet['ns2:rResEnviConsLoteDe'] ?? [];
 
             if (empty($resEnvi)) {
                  $retDe = $resultadoSet['ns2:rRetEnviDe'] ?? null;
@@ -103,32 +107,53 @@ class RucConsultationWidget extends Widget implements HasForms
                       Notification::make()->title('Rechazo SIFEN')->body($msg)->danger()->send();
                       return;
                  }
-                 Notification::make()->title('Respuesta Inesperada')->body('Estructura desconocida')->warning()->send();
+                 
+                 // DEBUG INFO
+                 $keys = implode(', ', array_keys($resultadoSet));
+                 $debugJson = substr(json_encode($resultadoSet), 0, 200);
+                 
+                 Notification::make()
+                    ->title('Respuesta Inesperada')
+                    ->body("Keys encontradas: [{$keys}]. JSON Start: {$debugJson}")
+                    ->warning()
+                    ->persistent()
+                    ->send();
                  return;
             }
 
-            if (($resEnvi['ns2:dCodRes'] ?? '') !== '0502') {
-                 Notification::make()->title('Aviso SIFEN')->body($resEnvi['ns2:dMsgRes'] ?? 'RUC no encontrado')->warning()->send();
-                 return;
+            // Extract status/message
+            $codRes = $resEnvi['ns2:dCodResLot'] ?? '';
+            $msgRes = $resEnvi['ns2:dMsgResLot'] ?? '';
+
+            // Normalize Status
+            $status = $msgRes;
+            if ($codRes === '0360') { 
+                $status = 'Inexistente';
+            } elseif ($codRes === '0364') {
+                $status = 'Extemporáneo';
             }
+            
+            // Save record
+            LoteBatch::create([
+                'batch_number' => $batch_number,
+                'environment' => $environment,
+                'status' => substr($status, 0, 255),
+                'response_data' => $responseData, 
+                'user_id' => auth()->id(),
+            ]);
+            
+            // Clear input
+            $this->data['batch_number'] = '';
+            $this->form->fill(['batch_number' => '', 'environment' => $environment]);
+            
+            $this->dispatch('lote-consulted');
 
-            $taxpayerData = $resEnvi['ns2:xContRUC'] ?? null;
-
-            if ($taxpayerData) {
-                RucQuery::create([
-                    'ruc_number' => $ruc_number,
-                    'environment' => $environment,
-                    'taxpayer_name' => $taxpayerData['ns2:dRazCons'] ?? null,
-                    'status' => $taxpayerData['ns2:dDesEstCons'] ?? null,
-                    'taxpayer_data' => $taxpayerData,
-                    'user_id' => auth()->id(),
-                ]);
-
-                Notification::make()->title('Consulta Exitosa')->body($taxpayerData['ns2:dRazCons'] ?? '')->success()->send();
-                
-                $this->form->fill(['environment' => $environment]); // Reset RUC but keep env
-                $this->dispatch('ruc-consulted');
-            }
+            // Generic logic for notification
+             Notification::make()
+                ->title('Consulta Realizada')
+                ->body("Respuesta: {$msgRes}")
+                ->success() // Or warning depending on code? Assuming success interaction
+                ->send();
 
         } catch (\Exception $e) {
             Notification::make()->title('Error')->body($e->getMessage())->danger()->send();

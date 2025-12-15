@@ -30,11 +30,11 @@ class RucQueryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'ruc_number';
     
-    protected static ?string $navigationLabel = 'Consultar RUC';
+    protected static ?string $navigationLabel = 'Consultar RUC - Sifen';
     
-    protected static ?string $modelLabel = 'Consultar RUC';
+    protected static ?string $modelLabel = 'Consultar RUC - Sifen';
     
-    protected static ?string $pluralModelLabel = 'Consultar RUC';
+    protected static ?string $pluralModelLabel = 'Consultar RUC - Sifen';
     
     protected static string|UnitEnum|null $navigationGroup = 'Consultas SIFEN';
     
@@ -138,11 +138,7 @@ class RucQueryResource extends Resource
             ->actions([
                 ViewAction::make(),
             ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
+            ->bulkActions([])
             ->defaultSort('created_at', 'desc');
     }
 
@@ -158,7 +154,6 @@ class RucQueryResource extends Resource
         return [
             'index' => ListRucQueries::route('/'),
             'view' => ViewRucQuery::route('/{record}'),
-            'edit' => EditRucQuery::route('/{record}/edit'),
         ];
     }
 }

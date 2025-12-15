@@ -17,6 +17,8 @@ return [
     'environments' => [
         'test' => [ // Testing environment
             'url' => env('URL_TESTING', 'http://10.99.99.63:37100'),
+            'cdc_url' => env('URL_TESTING', 'http://10.99.99.63:37100') . '/consultacdc',
+            'lote_url' => env('URL_TESTING', 'http://10.99.99.63:37100') . '/consultalote',
             'credentials' => [
                 'idCsc' => trim(env('IDCSC_TEST', '0001'), " \",\t\n\r\0\x0B"),
                 'csc' => trim(env('CSC_TEST', ''), " \",\t\n\r\0\x0B"),
@@ -27,6 +29,8 @@ return [
         ],
         'prod' => [ // Production environment
             'url' => env('URL_PROD', 'http://192.168.77.74:37100'),
+            'cdc_url' => env('URL_PROD', 'http://192.168.77.74:37100') . '/consultacdc',
+            'lote_url' => env('URL_PROD', 'http://192.168.77.74:37100') . '/consultalote',
             'credentials' => [
                 'idCsc' => trim(env('IDCSC_PROD', '0001'), " \",\t\n\r\0\x0B"),
                 'csc' => trim(env('CSC_PROD', ''), " \",\t\n\r\0\x0B"),

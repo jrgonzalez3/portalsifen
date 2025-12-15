@@ -20,9 +20,7 @@ class CdcDocumentsTable
                     ->label('CDC')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('document_type')
-                    ->label('Tipo')
-                    ->searchable(),
+
                 TextColumn::make('environment')
                     ->label('Entorno')
                     ->badge()
@@ -50,14 +48,8 @@ class CdcDocumentsTable
                     ])
                     ->placeholder('Todos los entornos'),
             ])
-            ->recordActions([
+            ->actions([
                 ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ])
             ->defaultSort('created_at', 'desc');
     }

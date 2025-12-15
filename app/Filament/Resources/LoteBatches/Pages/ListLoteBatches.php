@@ -12,8 +12,15 @@ class ListLoteBatches extends ListRecords
 
     protected function getHeaderActions(): array
     {
+        return [];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
         return [
-            CreateAction::make(),
+            \App\Filament\Widgets\LoteConsultationWidget::class,
         ];
     }
+
+    protected $listeners = ['lote-consulted' => '$refresh'];
 }

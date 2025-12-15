@@ -61,9 +61,7 @@ class CdcDocumentResource extends Resource
     {
         return [
             'index' => ListCdcDocuments::route('/'),
-            'create' => CreateCdcDocument::route('/create'),
             'view' => ViewCdcDocument::route('/{record}'),
-            'edit' => EditCdcDocument::route('/{record}/edit'),
         ];
     }
 }
